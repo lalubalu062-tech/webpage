@@ -1,0 +1,31 @@
+name: Build and Push to Docker Hub
+
+on:
+  push:
+    branches:
+      - main  # Agar aapka main branch ka naam 'master' hai toh yahan master likhein
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. GitHub se code checkout karein
+    - name: Check out the repo
+      uses: actions/checkout@v3
+
+    # 2. Docker Hub me Login karein
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    # 3. Docker Image Build aur Push karein
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        tags: jeetmohale00/web:live
